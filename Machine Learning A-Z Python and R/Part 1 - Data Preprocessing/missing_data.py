@@ -1,8 +1,13 @@
 # Data Preprocessing
 
-# Importing the libraries
+# Importing the essential libraries
+# Name of library is numpy and alias is np
+# numpy is a library that contains mathematical tools.
 import numpy as np
+# matplotlib is the library and pyplot is the sublibrary
+# this library allows us to plot graphs in python
 import matplotlib.pyplot as plt
+# pandas is the library to import, manage and export datasets
 import pandas as pd
 
 # Importing the dataset

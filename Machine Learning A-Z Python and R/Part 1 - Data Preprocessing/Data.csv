@@ -1,11 +1,11 @@
-Country,Age,Salary,Purchased
-France,44,72000,No
-Spain,27,48000,Yes
-Germany,30,54000,No
-Spain,38,61000,No
-Germany,40,,Yes
-France,35,58000,Yes
-Spain,,52000,No
-France,48,79000,Yes
-Germany,50,83000,No
-France,37,67000,Yes
+Temperature,Luminosity,Humidity,Motion,No. of people
+23,72000,44,1,2
+23,48000,27,0,3
+22,54000,30,1,4
+21,61000,38,0,5
+20,,40,0,4
+21,58000,35,0,4
+23,52000,,,0
+25,79000,48,1,1
+26,83000,50,1,1
+24,67000,37,1,1
