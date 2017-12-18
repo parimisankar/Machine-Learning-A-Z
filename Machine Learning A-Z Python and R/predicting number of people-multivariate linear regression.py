@@ -3,9 +3,17 @@
 # 2. Import the Dataset
 # 3. Split the Dataset into 2 matrices X (independent variables) & y(dependent variable)
 # 4. Replace missing data with the mean
-# 5. Split(randomly) the dataset into training and test set
-# 6. Feature Scaling
-
+# 5. Encoding categorial data (only if there is categorical data)
+# 6. Avoid dummy variable (only if there is categorical data)
+# 7. Split(randomly) the dataset into training and test set
+# 8. Feature Scaling
+# DATA ANALYTICS MODEL BUILDING
+# 9. Fitting multivariate linear regression to training set
+# 10. Predict test set results
+# 11. Calculate std. deviation
+# 12. Optimize the model using backward elimination (iterative steps)
+# 13. Use optimized model, remove columns that are not needed and repeat steps 9 -12
+#
 # IMPORTING ESSENTIAL LIBRARIES
 ## Name of library is numpy and alias is np
 ## numpy is a library that contains mathematical tools.
@@ -77,7 +85,12 @@ regressor.fit(X_train, y_train)
 
 # Predicting the Test set results
 y_pred = regressor.predict(X_test)
+
+# Calculating Standard Deviation
 std_dev = np.sum(np.square(y_pred - y_test))/y_pred.shape[0]
+# With my data, I got std_dev = 3.55 (which means model will predict +/- 3.55 people in the room, Not acceptable)
+# If you are satisfied with accuracy level, you can stop here
+# Else, Implement Backward Elimination method to remove insignificant variables
 
 # BUILDING OPTIMAL MODEL USING BACKWARD ELIMINATION
 # Getting the number of rows in X, X.shape[0]
@@ -89,11 +102,81 @@ X_opt = X[:, [0, 1, 2, 3, 4]] # specifying the indexes of each column
 # Fit the full model with all possible predictors
 regressor_OLS = sm.OLS(endog = y, exog = X_opt).fit()
 regressor_OLS.summary()
+# You will see
+##################################################################################
+#                             OLS Regression Results                             #
+# ============================================================================== #
+# Dep. Variable:                      y   R-squared:                       0.837 #
+# Model:                            OLS   Adj. R-squared:                  0.707 #
+# Method:                 Least Squares   F-statistic:                     6.430 #
+# Date:                Mon, 18 Dec 2017   Prob (F-statistic):             0.0331 #
+# Time:                        13:55:11   Log-Likelihood:                -9.9850 #
+# No. Observations:                  10   AIC:                             29.97 #
+# Df Residuals:                       5   BIC:                             31.48 #
+# Df Model:                           4                                          #
+# Covariance Type:            nonrobust                                          #
+# ============================================================================== #
+#                  coef    std err          t      P>|t|      [0.025      0.975] #
+# ------------------------------------------------------------------------------ #
+# const         17.3572      5.158      3.365      0.020       4.098      30.616 #
+# x1            -0.6993      0.257     -2.725      0.042      -1.359      -0.040 #
+# x2             0.0002   7.23e-05      2.431      0.059   -1.01e-05       0.000 #
+# x3            -0.2479      0.106     -2.341      0.066      -0.520       0.024 #
+# x4            -0.9313      0.948     -0.982      0.371      -3.369       1.506 #
+# ============================================================================== #
+# Omnibus:                        0.076   Durbin-Watson:                   1.761 #
+# Prob(Omnibus):                  0.963   Jarque-Bera (JB):                0.164 #
+# Skew:                          -0.126   Prob(JB):                        0.921 #
+# Kurtosis:                       2.426   Cond. No.                     1.15e+06 #
+# ============================================================================== #
+##################################################################################
+ 
+# P>|t| is called P-value and gives the significance level of the variable in the equation.
+# Higher the p-value, lower the significance
+# Remove the column with highest P>|t| value in the summary if P>|t| is > 0.05
+# In this case, it is x4 so, remove it by not inputing the index
 
 X_opt = X[:, [0, 1, 2, 3]] # specifying the indexes of each column
 # Fit the full model with all possible predictors
 regressor_OLS = sm.OLS(endog = y, exog = X_opt).fit()
 regressor_OLS.summary()
+# You will see
+##################################################################################
+#                             OLS Regression Results                             #
+# ============================================================================== #
+# Dep. Variable:                      y   R-squared:                       0.806 #
+# Model:                            OLS   Adj. R-squared:                  0.709 #
+# Method:                 Least Squares   F-statistic:                     8.301 #
+# Date:                Mon, 18 Dec 2017   Prob (F-statistic):             0.0148 #
+# Time:                        13:56:05   Log-Likelihood:                -10.867 #
+# No. Observations:                  10   AIC:                             29.73 #
+# Df Residuals:                       6   BIC:                             30.94 #
+# Df Model:                           3                                          #
+# Covariance Type:            nonrobust                                          #
+# ============================================================================== #
+#                  coef    std err          t      P>|t|      [0.025      0.975] #
+# ------------------------------------------------------------------------------ #
+# const         20.6940      3.869      5.348      0.002      11.226      30.162 #
+# x1            -0.8462      0.208     -4.073      0.007      -1.355      -0.338 #
+# x2             0.0002   6.99e-05      2.266      0.064   -1.26e-05       0.000 #
+# x3            -0.2323      0.104     -2.225      0.068      -0.488       0.023 #
+# ============================================================================== #
+# Omnibus:                        0.266   Durbin-Watson:                   2.132 #
+# Prob(Omnibus):                  0.876   Jarque-Bera (JB):                0.130 #
+# Skew:                          -0.191   Prob(JB):                        0.937 #
+# Kurtosis:                       2.592   Cond. No.                     8.56e+05 #
+# ============================================================================== #
+##################################################################################
+# Again look at P>|t| and remove the row with highest value that is > 0.05 
+# (In this case, I ignored as it is only slightly above 0.05)
+# Other variables of interest in the above table are coef, R-Squared and Adj. R-squared
+# Coef are coefficients in the prediction equation
+# R-squared is goodness of the model's fit.
+# R-squared and adjusted R-squared are normally between 0 and 1
+# The closer these R-squared and Adj. R-squared values are to 1, the better the model is.
+# The prediction equation will be number of people (y) = coef(const) + coef(x1)*x1 + coef(x2)*x2 + coef(x3)*x3
+# In this case, number of people in the room, y = 20.6940 - 0.8462*x1 + 0.0002*x2 - 0.2323*x3 
+# where x1 is Temperature, x2 is Humidity and x3 is Luminosity. Motion sensor is ignored.
 
 """# Visualising the Training set results
 plt.scatter(X_train, y_train, color = 'red')
